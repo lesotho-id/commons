@@ -1,11 +1,14 @@
 package io.mosip.kernel.vidgenerator.verticle;
 
-import io.vertx.core.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.vidgenerator.constant.VidIsolatorSchedulerConstants;
 import io.mosip.kernel.vidgenerator.service.VidService;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
@@ -26,7 +29,7 @@ public class VidIsolatorVerticle extends AbstractVerticle {
 	}
 
 	@Override
-	public void start(Promise<Void> startFuture) throws Exception {
+	public void start(Future<Void> startFuture) throws Exception {
 		vertx.deployVerticle(VidIsolatorSchedulerConstants.CEYLON_SCHEDULER, this::schedulerResult);
 	}
 
@@ -65,7 +68,7 @@ public class VidIsolatorVerticle extends AbstractVerticle {
 			.put(VidIsolatorSchedulerConstants.DAYS_OF_WEEK,
 				environment.getProperty(VidIsolatorSchedulerConstants.DAYS_OF_WEEK_VALUE));
 
-		eventBus.request(VidIsolatorSchedulerConstants.CHIME,
+		eventBus.send(VidIsolatorSchedulerConstants.CHIME,
 			new JsonObject().put(VidIsolatorSchedulerConstants.OPERATION, VidIsolatorSchedulerConstants.OPERATION_VALUE)
 				.put(VidIsolatorSchedulerConstants.NAME, VidIsolatorSchedulerConstants.NAME_VALUE)
 				.put(VidIsolatorSchedulerConstants.DESCRIPTION, timer),

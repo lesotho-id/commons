@@ -1,21 +1,23 @@
 package io.mosip.kernel.idgenerator.verticle;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.idgenerator.config.UinServiceHealthCheckerhandler;
 import io.mosip.kernel.idgenerator.config.UinServiceRouter;
+import io.mosip.kernel.uingenerator.constant.UINHealthConstants;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.vidgenerator.constant.EventType;
 import io.mosip.kernel.vidgenerator.constant.VIDGeneratorConstant;
 import io.mosip.kernel.vidgenerator.router.VidFetcherRouter;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Promise;
+import io.vertx.core.Future;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
 import io.vertx.micrometer.PrometheusScrapingHandler;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.env.Environment;
 
 /**
  * Http Verticle for fetching UIN and VID
@@ -55,7 +57,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 	 * @see io.vertx.core.AbstractVerticle#start(io.vertx.core.Future)
 	 */
 	@Override
-	public void start(Promise<Void> future) {
+	public void start(Future<Void> future) {
 		HttpServer httpServer = vertx.createHttpServer();
 
 		// Parent router so that global options can be applied to it in future
