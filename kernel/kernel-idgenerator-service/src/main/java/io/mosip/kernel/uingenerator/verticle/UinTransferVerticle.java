@@ -30,10 +30,12 @@ public class UinTransferVerticle extends AbstractVerticle {
 
 	@Override
 	public void start(Future<Void> startFuture) throws Exception {
+		LOGGER.info("Entering into UinTransferVerticle");
 		vertx.deployVerticle(UinSchedulerConstants.CEYLON_SCHEDULER, this::schedulerResult);
 	}
 
 	public void schedulerResult(AsyncResult<String> result) {
+		LOGGER.info("Entering into UinTransferVerticle schedulerResult");
 		if (result.succeeded()) {
 			LOGGER.debug("scheduler verticle deployment successfull");
 			cronScheduling(vertx);
@@ -49,7 +51,7 @@ public class UinTransferVerticle extends AbstractVerticle {
 	 * @param vertx the vertx
 	 */
 	private void cronScheduling(Vertx vertx) {
-
+		LOGGER.info("Entering into UinTransferVerticle cronScheduling");
 		EventBus eventBus = vertx.eventBus();
 
 		MessageConsumer<JsonObject> consumer = eventBus.consumer(UinSchedulerConstants.NAME_VALUE);
