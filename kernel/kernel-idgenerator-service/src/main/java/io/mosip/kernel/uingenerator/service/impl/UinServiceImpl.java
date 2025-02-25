@@ -128,10 +128,15 @@ public class UinServiceImpl implements UinService {
 	@Transactional(transactionManager = "transactionManager")
 	@Override
 	public void transferUin() {
+		LOGGER.info("Entering into transferUin method");
 		List<UinEntity> uinEntities=uinRepository.findByStatus(UinGeneratorConstant.ISSUED);
+		LOGGER.info("Fetched Records into transferUin method");
 		List<UinEntityAssigned> uinEntitiesAssined = modelMapper.map(uinEntities, new TypeToken<List<UinEntityAssigned>>() {}.getType());
 		uinRepositoryAssigned.saveAll(uinEntitiesAssined);
-	    uinRepository.deleteAll(uinEntities);
+		LOGGER.info("Adding into assigned Table");
+		uinRepository.deleteAll(uinEntities);
+		LOGGER.info("Exist Records into transferUin method");
+
 	}
 	
 	
