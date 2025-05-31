@@ -67,7 +67,7 @@ public class UinServiceImpl implements UinService {
 	private VertxAuthenticationProvider authHandler;
 
 	@Value("${mosip.uingenerator.uin.transfer.fetch.limit:100000}")
-	private String fetchLimit;
+	private Integer fetchLimit;
 	/*
 	 * (non-Javadoc)
 	 * 
