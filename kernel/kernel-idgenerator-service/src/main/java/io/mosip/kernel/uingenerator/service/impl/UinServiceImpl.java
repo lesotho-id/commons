@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,6 +66,8 @@ public class UinServiceImpl implements UinService {
 	@Autowired
 	private VertxAuthenticationProvider authHandler;
 
+	@Value("${mosip.uingenerator.uin.transfer.fetch.limit:100000}")
+	private String fetchLimit;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -129,7 +132,7 @@ public class UinServiceImpl implements UinService {
 	@Override
 	public void transferUin() {
 		LOGGER.info("Entering into transferUin method");
-		List<UinEntity> uinEntities=uinRepository.findByStatus(UinGeneratorConstant.ISSUED);
+		List<UinEntity> uinEntities=uinRepository.findByStatus(UinGeneratorConstant.ISSUED, fetchLimit);
 		LOGGER.info("Fetched Records into transferUin method");
 		List<UinEntityAssigned> uinEntitiesAssined = modelMapper.map(uinEntities, new TypeToken<List<UinEntityAssigned>>() {}.getType());
 		uinRepositoryAssigned.saveAll(uinEntitiesAssined);
