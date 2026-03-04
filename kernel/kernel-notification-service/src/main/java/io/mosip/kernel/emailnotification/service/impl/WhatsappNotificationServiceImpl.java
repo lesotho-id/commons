@@ -35,11 +35,11 @@ public class WhatsappNotificationServiceImpl implements WhatsappNotificationServ
     @Value("${mosip.kernel.whatsapp.message-url:url}")
     private String url;
 
-    @Value("${mosip.kernel.whatsapp.country.code:91}")
-    private String countryCode;
-
-    @Value("${mosip.kernel.whatsapp.number.length:10}")
-    int numberLength;
+//    @Value("${mosip.kernel.whatsapp.country.code:91}")
+//    private String countryCode;
+//
+//    @Value("${mosip.kernel.whatsapp.number.length:10}")
+//    int numberLength;
 
     @Override
     public WhatsappResponseDto sendWhatsappNotification(String recipient, String message, MultipartFile [] files) {
@@ -47,7 +47,7 @@ public class WhatsappNotificationServiceImpl implements WhatsappNotificationServ
         LOGGER.info("whatsapp message: "+message);
         validateInput(recipient);
         try {
-            String whatsappMobileNo = recipient.startsWith(countryCode) ? recipient : countryCode + recipient;
+            //String whatsappMobileNo = recipient.startsWith(countryCode) ? recipient : countryCode + recipient;
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(List.of(MediaType.APPLICATION_JSON));
             headers.set("x-api-key", apiKey);
@@ -56,7 +56,7 @@ public class WhatsappNotificationServiceImpl implements WhatsappNotificationServ
             if (files != null && files.length>0) {
                 headers.setContentType(MediaType.MULTIPART_FORM_DATA);
                 MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-                body.add("recipient", whatsappMobileNo);
+                body.add("recipient", recipient);
                 body.add("caption", message != null ? message : "");
 
                 for (MultipartFile file : files) {
@@ -78,7 +78,7 @@ public class WhatsappNotificationServiceImpl implements WhatsappNotificationServ
             } else {
                 headers.setContentType(MediaType.APPLICATION_JSON);
                 WhatsappRequestDto request = new WhatsappRequestDto();
-                request.setRecipient(whatsappMobileNo);
+                request.setRecipient(recipient);
                 request.setMessage(message);
                 HttpEntity<WhatsappRequestDto> entity =
                         new HttpEntity<>(request, headers);
@@ -113,9 +113,7 @@ public class WhatsappNotificationServiceImpl implements WhatsappNotificationServ
     }
     private void validateInput(String contactNumber) {
         if (contactNumber == null ||
-                !StringUtils.isNumeric(contactNumber) ||
-                contactNumber.length() != numberLength) {
-
+                !StringUtils.isNumeric(contactNumber)) {
             throw new InvalidNumberException(
                     "INVALID_WHATSAPP_NUMBER",
                     "Invalid whatsapp number"
